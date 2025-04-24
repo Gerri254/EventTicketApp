@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/splashFragment"
+    android:id="@+id/nav_graph.xml">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.eventticketapp.ui.splash.SplashFragment"
+        android:label="SplashFragment">
+        <action
+            android:id="@+id/action_splashFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.eventticketapp.ui.auth.LoginFragment"
+        android:label="LoginFragment">
+        <action
+            android:id="@+id/action_loginFragment_to_signupFragment"
+            app:destination="@id/signupFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.example.eventticketapp.ui.auth.SignupFragment"
+        android:label="SignupFragment">
+        <action
+            android:id="@+id/action_signupFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_signupFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.eventticketapp.ui.home.HomeFragment"
+        android:label="HomeFragment">
+        <action
+            android:id="@+id/action_homeFragment_to_eventDetailsFragment"
+            app:destination="@id/eventDetailsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_createEventFragment"
+            app:destination="@id/createEventFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_ticketViewerFragment"
+            app:destination="@id/ticketViewerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/eventDetailsFragment"
+        android:name="com.example.eventticketapp.ui.events.details.EventDetailsFragment"
+        android:label="EventDetailsFragment">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_eventDetailsFragment_to_ticketPreviewFragment"
+            app:destination="@id/ticketPreviewFragment" />
+        <action
+            android:id="@+id/action_eventDetailsFragment_to_qrScannerFragment"
+            app:destination="@id/qrScannerFragment" />
+        <action
+            android:id="@+id/action_eventDetailsFragment_to_createEventFragment"
+            app:destination="@id/createEventFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createEventFragment"
+        android:name="com.example.eventticketapp.ui.events.create.CreateEventFragment"
+        android:label="CreateEventFragment">
+        <action
+            android:id="@+id/action_createEventFragment_to_ticketTypeSetupFragment"
+            app:destination="@id/ticketTypeSetupFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ticketTypeSetupFragment"
+        android:name="com.example.eventticketapp.ui.events.create.TicketTypeSetupFragment"
+        android:label="TicketTypeSetupFragment">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_ticketTypeSetupFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/createEventFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ticketPreviewFragment"
+        android:name="com.example.eventticketapp.ui.tickets.preview.TicketPreviewFragment"
+        android:label="TicketPreviewFragment">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+        <argument
+            android:name="ticketId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ticketViewerFragment"
+        android:name="com.example.eventticketapp.ui.tickets.viewer.TicketViewerFragment"
+        android:label="TicketViewerFragment">
+        <argument
+            android:name="ticketId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/qrScannerFragment"
+        android:name="com.example.eventticketapp.ui.tickets.scanner.QRScannerFragment"
+        android:label="QRScannerFragment">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+    </fragment>
+
+</navigation>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <paths>
+        <files-path
+            name="tickets"
+            path="tickets/" />
+        <cache-path
+            name="shared_images"
+            path="images/" />
+        <external-files-path
+            name="external_files"
+            path="." />
+    </paths>
+
+</PreferenceScreen>

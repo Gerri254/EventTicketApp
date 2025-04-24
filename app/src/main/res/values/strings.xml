@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">EventTicketGenerator</string>
+    <string name="default_notification_channel_id">event_reminders</string>
+
+    <!-- Auth Strings -->
+    <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="already_have_account">Already have an account?</string>
+
+    <!-- Home Screen -->
+    <string name="explore">Explore</string>
+    <string name="my_events">My Events</string>
+    <string name="my_tickets">My Tickets</string>
+    <string name="search_events">Search events…</string>
+
+    <!-- Event Creation -->
+    <string name="create_event">Create Event</string>
+    <string name="edit_event">Edit Event</string>
+    <string name="event_title">Event Title</string>
+    <string name="description">Description</string>
+    <string name="location">Location</string>
+    <string name="date_time">Date &amp; Time</string>
+    <string name="category">Category</string>
+    <string name="public_event">Public Event</string>
+    <string name="add_image">Add Event Image</string>
+
+    <!-- Ticket Setup -->
+    <string name="ticket_types">Ticket Types</string>
+    <string name="add_ticket_type">Add Ticket Type</string>
+    <string name="edit_ticket_type">Edit Ticket Type</string>
+    <string name="ticket_name">Ticket Name</string>
+    <string name="price">Price ($)</string>
+    <string name="quantity">Quantity</string>
+
+    <!-- Event Details -->
+    <string name="register">Register for Event</string>
+    <string name="about_event">About This Event</string>
+    <string name="tickets">Tickets</string>
+    <string name="no_tickets">No tickets available for this event</string>
+    <string name="organized_by">Organized by: %1$s</string>
+
+    <!-- QR Scanner -->
+    <string name="scan_tickets">Scan Tickets</string>
+    <string name="scan_qr_code">Position the QR code within the frame to scan</string>
+    <string name="camera_permission_required">Camera permission is required to scan QR codes</string>
+    <string name="grant_permission">Grant Permission</string>
+
+    <!-- Ticket Viewer -->
+    <string name="view_ticket">View Ticket</string>
+    <string name="share_ticket">Share Ticket</string>
+    <string name="save_as_pdf">Save as PDF</string>
+    <string name="ticket_status">Ticket Status</string>
+    <string name="valid">VALID</string>
+    <string name="used">USED</string>
+
+    <!-- Common -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+    <string name="loading">Loading…</string>
+    <string name="retry">Retry</string>
+
+</resources>

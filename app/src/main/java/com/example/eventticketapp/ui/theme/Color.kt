@@ -1,0 +1,71 @@
+// ui/theme/Color.kt
+package com.example.eventticketapp.ui.theme
+
+import androidx.compose.ui.graphics.Color
+
+// Light Theme Colors
+val md_theme_light_primary = Color(0xFF3F51B5)
+val md_theme_light_onPrimary = Color(0xFFFFFFFF)
+val md_theme_light_primaryContainer = Color(0xFFDFE0FF)
+val md_theme_light_onPrimaryContainer = Color(0xFF000B5E)
+val md_theme_light_secondary = Color(0xFFFF5722)
+val md_theme_light_onSecondary = Color(0xFFFFFFFF)
+val md_theme_light_secondaryContainer = Color(0xFFFFDBCE)
+val md_theme_light_onSecondaryContainer = Color(0xFF380D00)
+val md_theme_light_tertiary = Color(0xFF4CAF50)
+val md_theme_light_onTertiary = Color(0xFFFFFFFF)
+val md_theme_light_tertiaryContainer = Color(0xFFC8F5C8)
+val md_theme_light_onTertiaryContainer = Color(0xFF002204)
+val md_theme_light_error = Color(0xFFBA1A1A)
+val md_theme_light_errorContainer = Color(0xFFFFDAD6)
+val md_theme_light_onError = Color(0xFFFFFFFF)
+val md_theme_light_onErrorContainer = Color(0xFF410002)
+val md_theme_light_background = Color(0xFFFFFBFF)
+val md_theme_light_onBackground = Color(0xFF1B1B1F)
+val md_theme_light_surface = Color(0xFFFFFBFF)
+val md_theme_light_onSurface = Color(0xFF1B1B1F)
+val md_theme_light_surfaceVariant = Color(0xFFE3E1EC)
+val md_theme_light_onSurfaceVariant = Color(0xFF46464F)
+val md_theme_light_outline = Color(0xFF767680)
+val md_theme_light_inverseOnSurface = Color(0xFFF3EFF4)
+val md_theme_light_inverseSurface = Color(0xFF303034)
+val md_theme_light_inversePrimary = Color(0xFFBEC2FF)
+val md_theme_light_surfaceTint = Color(0xFF3F51B5)
+val md_theme_light_outlineVariant = Color(0xFFC7C5D0)
+val md_theme_light_scrim = Color(0xFF000000)
+
+// Dark Theme Colors
+val md_theme_dark_primary = Color(0xFFBEC2FF)
+val md_theme_dark_onPrimary = Color(0xFF001097)
+val md_theme_dark_primaryContainer = Color(0xFF0014CC)
+val md_theme_dark_onPrimaryContainer = Color(0xFFDFE0FF)
+val md_theme_dark_secondary = Color(0xFFFFB59E)
+val md_theme_dark_onSecondary = Color(0xFF5C1B00)
+val md_theme_dark_secondaryContainer = Color(0xFF802800)
+val md_theme_dark_onSecondaryContainer = Color(0xFFFFDBCE)
+val md_theme_dark_tertiary = Color(0xFFADDBB0)
+val md_theme_dark_onTertiary = Color(0xFF003916)
+val md_theme_dark_tertiaryContainer = Color(0xFF00522A)
+val md_theme_dark_onTertiaryContainer = Color(0xFFC8F5C8)
+val md_theme_dark_error = Color(0xFFFFB4AB)
+val md_theme_dark_errorContainer = Color(0xFF93000A)
+val md_theme_dark_onError = Color(0xFF690005)
+val md_theme_dark_onErrorContainer = Color(0xFFFFDAD6)
+val md_theme_dark_background = Color(0xFF1B1B1F)
+val md_theme_dark_onBackground = Color(0xFFE4E1E6)
+val md_theme_dark_surface = Color(0xFF1B1B1F)
+val md_theme_dark_onSurface = Color(0xFFE4E1E6)
+val md_theme_dark_surfaceVariant = Color(0xFF46464F)
+val md_theme_dark_onSurfaceVariant = Color(0xFFC7C5D0)
+val md_theme_dark_outline = Color(0xFF90909A)
+val md_theme_dark_inverseOnSurface = Color(0xFF1B1B1F)
+val md_theme_dark_inverseSurface = Color(0xFFE4E1E6)
+val md_theme_dark_inversePrimary = Color(0xFF3F51B5)
+val md_theme_dark_surfaceTint = Color(0xFFBEC2FF)
+val md_theme_dark_outlineVariant = Color(0xFF46464F)
+val md_theme_dark_scrim = Color(0xFF000000)
+
+// Additional app-specific colors
+val vipTicketColor = Color(0xFFFFD700) // Gold for VIP tickets
+val regularTicketColor = Color(0xFF3F51B5) // Primary blue for regular tickets
+val freeTicketColor = Color(0xFF4CAF50) // Green for free tickets
