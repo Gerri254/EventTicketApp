@@ -45,20 +45,7 @@
 - 📷 **QR Scanner** - Quick validation with real-time feedback and animations
 - 📊 **Analytics Dashboard** - Track attendance and engagement with interactive charts
 
-## 📱 App Screens
 
-<table>
-  <tr>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/screens/splash.png" width="180px" /><br><b>Splash Screen</b><br><i>Animated logo reveal</i></td>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/screens/login.png" width="180px" /><br><b>Authentication</b><br><i>Login/Signup with Firebase</i></td>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/screens/home.png" width="180px" /><br><b>Home Screen</b><br><i>Event discovery</i></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/screens/details.png" width="180px" /><br><b>Event Details</b><br><i>Rich event information</i></td>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/screens/ticket.png" width="180px" /><br><b>Ticket Preview</b><br><i>Animated QR tickets</i></td>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/screens/scanner.png" width="180px" /><br><b>QR Scanner</b><br><i>Real-time validation</i></td>
-  </tr>
-</table>
 
 ## 🧩 App Flow Animation
 
