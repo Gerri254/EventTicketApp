@@ -3,7 +3,8 @@
 
 <div align="center">
   
-  ![TicketWave Banner](https://raw.githubusercontent.com/Gerri254/app/src/main/res/raw/banner.jpg)
+  ![TicketWave Banner](https://raw.githubusercontent.com/Gerri254/EventTicketApp/main/app/src/main/res/raw/banner.jpg)
+
   
   <p align="center">
     <a href="#features">Features</a> •
