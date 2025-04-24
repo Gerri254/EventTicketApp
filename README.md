@@ -27,9 +27,7 @@
 
 **TicketWave** is a modern, feature-rich Kotlin application that revolutionizes how organizers create events and how attendees discover and participate in them. With beautiful Material You design, interactive QR tickets, and seamless scanning capabilities, TicketWave brings event management into the future.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/your-username/ticketwave/main/demo.gif" width="280px" />
-</p>
+
 
 ## ✨ Features
 
@@ -78,18 +76,51 @@ HomeScreen (Bottom Navigation)
 
 <table>
   <tr>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/icons/kotlin.png" width="30px" /><br>Kotlin</td>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/icons/compose.png" width="30px" /><br>Jetpack Compose</td>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/icons/material.png" width="30px" /><br>Material You</td>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/icons/firebase.png" width="30px" /><br>Firebase</td>
+    <td align="center">
+      <a href="https://kotlinlang.org/">
+        <img src="https://raw.githubusercontent.com/Gerri254/EventTicketApp/main/app/src/main/res/raw/KotlinLogo.png" width="30px" /><br>Kotlin
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://developer.android.com/jetpack/compose">
+        <img src="https://raw.githubusercontent.com/Gerri254/EventTicketApp/main/app/src/main/res/raw/jetpack.png" width="30px" /><br>Jetpack Compose
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://m3.material.io/">
+        <img src="https://raw.githubusercontent.com/Gerri254/EventTicketApp/main/app/src/main/res/raw/MaterialYou.jpg" width="30px" /><br>Material You
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://firebase.google.com/">
+        <img src="https://raw.githubusercontent.com/Gerri254/EventTicketApp/main/app/src/main/res/raw/FireBase.png" width="30px" /><br>Firebase
+      </a>
+    </td>
   </tr>
   <tr>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/icons/room.png" width="30px" /><br>Room DB</td>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/icons/lottie.png" width="30px" /><br>Lottie</td>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/icons/camerax.png" width="30px" /><br>CameraX</td>
-    <td align="center"><img src="https://raw.githubusercontent.com/your-username/ticketwave/main/icons/zxing.png" width="30px" /><br>ZXing</td>
+    <td align="center">
+      <a href="https://developer.android.com/jetpack/androidx/releases/room">
+        <img src="https://raw.githubusercontent.com/Gerri254/EventTicketApp/main/app/src/main/res/raw/RoomDb.png" width="30px" /><br>Room DB
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://airbnb.io/lottie/#/">
+        <img src="https://raw.githubusercontent.com/Gerri254/EventTicketApp/main/app/src/main/res/raw/Lottie.png" width="30px" /><br>Lottie
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://developer.android.com/training/camerax">
+        <img src="https://raw.githubusercontent.com/Gerri254/EventTicketApp/main/app/src/main/res/raw/cameraX.jpg" width="30px" /><br>CameraX
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/zxing/zxing">
+        <img src="https://raw.githubusercontent.com/Gerri254/EventTicketApp/main/app/src/main/res/raw/Zxing-logo.png" width="30px" /><br>ZXing
+      </a>
+    </td>
   </tr>
 </table>
+
 
 ### Libraries & Tools
 
@@ -219,7 +250,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">
-  Made with ❤️ by [Your Name]
+  Made with ❤️ by Luzzi Geraldo
 </p>
 
 <p align="center">
