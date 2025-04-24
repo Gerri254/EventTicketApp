@@ -149,10 +149,10 @@ HomeScreen (Bottom Navigation)
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/ticketwave.git
+git clone https://github.com/Gerri254/EventTicketApp.git
 
 # Navigate to the project directory
-cd ticketwave
+cd EventTicketApp
 
 # Open with Android Studio and sync Gradle
 ```
