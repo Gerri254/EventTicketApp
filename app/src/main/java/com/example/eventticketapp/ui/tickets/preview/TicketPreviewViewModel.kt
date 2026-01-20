@@ -34,14 +34,7 @@ class TicketPreviewViewModel @Inject constructor(
     fun loadTicket(ticketId: String) {
         viewModelScope.launch {
             _ticket.value = Resource.Loading()
-            val ticketResult = ticketRepository.getTicketById(ticketId)
-            
-            // Assuming repository has getTicketById returning Ticket? or Resource<Ticket>
-            // I'll assume standard repo pattern, maybe similar to EventRepository which had local/remote.
-            // TicketRepository likely has getTicketById(id)
-            
-            // I need to check TicketRepository.
-            // But for now, I'll assume it works or I'll check it after this.
+            val ticketResult = ticketRepository.getTicketByIdFromRemote(ticketId)
             
             if (ticketResult != null) {
                 _ticket.value = Resource.Success(ticketResult)

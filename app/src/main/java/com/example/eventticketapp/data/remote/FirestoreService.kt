@@ -165,6 +165,19 @@ class FirestoreService @Inject constructor(
         return ticketId
     }
 
+    suspend fun getTicketById(ticketId: String): Ticket? {
+        val document = firestore.collection(TICKETS_COLLECTION)
+            .document(ticketId)
+            .get()
+            .await()
+
+        return if (document.exists()) {
+            document.toObject(Ticket::class.java)
+        } else {
+            null
+        }
+    }
+
     suspend fun getTicketByQrCode(qrCodeData: String): Ticket? {
         val querySnapshot = firestore.collection(TICKETS_COLLECTION)
             .whereEqualTo("qrCodeData", qrCodeData)

@@ -442,6 +442,18 @@ fun TicketPreviewScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
+                        // View Ticket Button
+                        Button(
+                            onClick = {
+                                navController.navigate(Screen.TicketViewer.createRoute(ticket.id))
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("View Ticket")
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
                         // Add to calendar button
                         OutlinedButton(
                             onClick = {

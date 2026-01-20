@@ -73,6 +73,10 @@ class TicketRepository @Inject constructor(
         return firestoreService.createTicket(ticket)
     }
 
+    suspend fun getTicketByIdFromRemote(ticketId: String): Ticket? {
+        return firestoreService.getTicketById(ticketId)
+    }
+
     suspend fun getTicketByQrCodeFromRemote(qrCodeData: String): Ticket? {
         return firestoreService.getTicketByQrCode(qrCodeData)
     }
