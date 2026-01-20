@@ -6,12 +6,14 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import com.example.eventticketapp.util.Constants
+import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class EventTicketApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        PDFBoxResourceLoader.init(applicationContext)
         createNotificationChannels()
     }
 

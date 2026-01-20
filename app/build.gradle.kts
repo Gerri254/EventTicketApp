@@ -124,26 +124,25 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:${rootProject.extra["camerax_version"]}")
     implementation("androidx.camera:camera-view:${rootProject.extra["camerax_version"]}")
 
-    // QR Code
+    // ML Kit Barcode Scanning
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
+
+    // QR Code Generation (ZXing Core)
     implementation("com.google.zxing:core:${rootProject.extra["zxing_version"]}")
-    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 
     // Coil for Image Loading with animations
     implementation ("io.coil-kt:coil-compose:2.4.0")
 
     // PDF Generation
-    implementation("com.itextpdf:itextg:5.5.10")
+    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
 
-    // Your other dependencies
-    implementation ("com.google.code.gson:gson:2.10.1")
+    // Kotlin Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
-
-    // Image Loading
-    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("com.google.android.material:material:1.11.0")
 
     // Testing

@@ -1,10 +1,16 @@
 package com.example.eventticketapp.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 sealed class Resource<T>(
     val data: T? = null,
     val message: String? = null
 ) {
-    class Success<T>(data: T) : Resource<T>(data)
-    class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
-    class Loading<T>(data: T? = null) : Resource<T>(data)
+    @Serializable
+    class Success<T>(val _data: T) : Resource<T>(_data)
+    @Serializable
+    class Error<T>(val _message: String, val _data: T? = null) : Resource<T>(_data, _message)
+    @Serializable
+    class Loading<T>(val _data: T? = null) : Resource<T>(_data)
 }

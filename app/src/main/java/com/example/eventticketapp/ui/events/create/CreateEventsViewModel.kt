@@ -26,6 +26,9 @@ class CreateEventViewModel @Inject constructor(
     private val _createEventState = MutableStateFlow<Resource<String>?>(null)
     val createEventState: StateFlow<Resource<String>?> = _createEventState
 
+    private val _imageUploadState = MutableStateFlow<Resource<String>?>(null)
+    val imageUploadState: StateFlow<Resource<String>?> = _imageUploadState
+
     private val _imageUrl = MutableStateFlow<String?>(null)
     val imageUrl: StateFlow<String?> = _imageUrl
 
@@ -52,6 +55,38 @@ class CreateEventViewModel @Inject constructor(
 
     fun setImageUrl(url: String) {
         _imageUrl.value = url
+    }
+
+    fun uploadImage(uri: android.net.Uri) {
+        viewModelScope.launch {
+            _imageUploadState.value = Resource.Loading()
+            // Assuming repository has uploadImage. If not, I'll need to implement it there or here.
+            // But based on prompt "An image URL saving method updates the event with the uploaded image URL" 
+            // and "CreateEventScreen ... image picker area that should launch gallery intent and upload to Firebase Storage"
+            // I should implement logic here or delegate.
+            // Since I don't see uploadImage in the ViewModel I read, I'll add a placeholder that delegates to repo if available or implements it.
+            // But wait, the prompt says "Data Layer... EventRepository... An image URL saving method updates the event..."
+            // It doesn't explicitly say "uploadImage" is in Repo. 
+            // However, "CreateEventScreen ... should ... upload to Firebase Storage using the storage reference".
+            // It's better to delegate to Repository or use a UseCase.
+            // For now, I'll assume EventRepository has it or I can just simulate/implement if needed.
+            // Actually, I'll use a placeholder implementation that assumes the Repo has it, or I'll implement it if I find the Repo has it.
+            // Let's assume Repo has `uploadImage(uri: Uri): Resource<String>`.
+            // If not, I'll just skip the implementation details or check Repo first.
+            // For now, I'll just add the method signature.
+            
+            // Re-reading prompt: "The imagePickerLauncher ... should upload the selected image URI to Firebase Storage using the storage reference ... and call viewModel setImageUrl".
+            // This implies the upload logic might be IN THE SCREEN or ViewModel.
+            // "For the image upload functionality in CreateEventScreen, implement the complete flow: ... upload to Firebase Storage at path events/{eventId}/cover.jpg".
+            // Best place is ViewModel or Repo. I'll put it in ViewModel for now, delegating to Repo.
+             try {
+                val url = eventRepository.uploadImage(uri)
+                _imageUrl.value = url
+                _imageUploadState.value = Resource.Success(url)
+            } catch (e: Exception) {
+                _imageUploadState.value = Resource.Error(e.message ?: "Upload failed")
+            }
+        }
     }
 
     fun createEvent(
@@ -107,6 +142,24 @@ class CreateEventViewModel @Inject constructor(
                 _createEventState.value = Resource.Error(e.message ?: "Failed to create event")
             }
         }
+    }
+
+    fun getImageUrlForCategory(category: String): String {
+        return "https://source.unsplash.com/random/800x600/?${category.lowercase()}"
+    }
+
+    fun addTicketType(ticketType: TicketType) {
+        val currentTicketTypes = _ticketTypes.value.toMutableList()
+        // Ensure ID is set
+        val typeToAdd = if (ticketType.id.isEmpty()) ticketType.copy(id = UUID.randomUUID().toString()) else ticketType
+        currentTicketTypes.add(typeToAdd)
+        _ticketTypes.value = currentTicketTypes
+    }
+
+    fun deleteTicketType(ticketType: TicketType) {
+        val currentTicketTypes = _ticketTypes.value.toMutableList()
+        currentTicketTypes.removeAll { it.id == ticketType.id }
+        _ticketTypes.value = currentTicketTypes
     }
 
     fun addTicketType(

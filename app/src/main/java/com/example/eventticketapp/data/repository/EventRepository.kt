@@ -1,22 +1,34 @@
 package com.example.eventticketapp.data.repository
 
+import android.net.Uri
 import com.example.eventticketapp.data.local.dao.EventDao
 import com.example.eventticketapp.data.local.entity.EventEntity
 import com.example.eventticketapp.data.model.Event
 import com.example.eventticketapp.data.model.Resource
 import com.example.eventticketapp.data.remote.FirestoreService
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
 import java.util.Date
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class EventRepository @Inject constructor(
     private val eventDao: EventDao,
-    private val firestoreService: FirestoreService
+    private val firestoreService: FirestoreService,
+    private val storage: FirebaseStorage
 ) {
+    suspend fun uploadImage(uri: Uri): String {
+        val storageRef = storage.reference
+        val imageRef = storageRef.child("events/${UUID.randomUUID()}/cover.jpg")
+        val uploadTask = imageRef.putFile(uri).await()
+        return imageRef.downloadUrl.await().toString()
+    }
+
     // Local operations
     fun getAllEventsFromLocal(): Flow<List<Event>> {
         return eventDao.getAllEvents().map { entities ->

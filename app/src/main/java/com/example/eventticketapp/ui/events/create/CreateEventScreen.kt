@@ -20,11 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.Checkbox
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -33,7 +30,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -41,10 +37,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -55,9 +49,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -91,19 +85,15 @@ fun CreateEventScreen(
     var isPublic by remember { mutableStateOf(currentEvent?.isPublic ?: true) }
     var eventDate by remember { mutableStateOf(currentEvent?.date ?: Date()) }
     var imageUrl by remember { mutableStateOf(currentEvent?.imageUrl) }
-    val selectedImageCategory by remember { mutableStateOf(viewModel.getImageUrlForCategory(selectedCategory)) }
-
+    
     var showCategoryDropdown by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
-    // Image picker
-    OutlinedTextField(
-        value = imageUrl,
-        onValueChange = { imageUrl = it },
-        label = { Text("Image URL (optional)") },
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text("Enter an image URL or leave blank for default") }
-    )
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { viewModel.uploadImage(it) }
+    }
 
     // Date and time picker
     val calendar = Calendar.getInstance()
@@ -141,6 +131,7 @@ fun CreateEventScreen(
             is Resource.Success -> {
                 val url = (imageUploadState as Resource.Success<String>).data
                 imageUrl = url
+                viewModel.setImageUrl(url!!)
                 viewModel.clearStates()
                 scope.launch {
                     scaffoldState.snackbarHostState.showSnackbar("Image uploaded successfully")
@@ -234,42 +225,42 @@ fun CreateEventScreen(
                         .clickable { imagePickerLauncher.launch("image/*") },
                     contentAlignment = Alignment.Center
                 ) {
-                    if (!event.imageUrl.isNullOrEmpty()) {
+                    if (!imageUrl.isNullOrEmpty()) {
                         AsyncImage(
-                            model = event.imageUrl,
+                            model = imageUrl,
                             contentDescription = "Event Image",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
                     } else {
-
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(getCategoryColor(event.category)),
+                                .background(getCategoryColor(selectedCategory)),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = event.title.first().toString(),
-                                style = MaterialTheme.typography.displayLarge,
+                                text = if (title.isNotEmpty()) title.first().toString() else "E",
+                                style = MaterialTheme.typography.h2,
                                 color = Color.White
                             )
                         }
-
+                    }
+                    
+                    if (isLoading && imageUploadState is Resource.Loading) {
+                        CircularProgressIndicator()
                     }
                 }
 
-                fun getCategoryColor(category: String): Color {
-                    return when(category) {
-                        "Concert" -> Color(0xFF5E35B1)
-                        "Conference" -> Color(0xFF0288D1)
-                        "Festival" -> Color(0xFFEF6C00)
-                        // Add other categories
-                        else -> Color(0xFF2E7D32)
-                    }
-                }
+                Spacer(modifier = Modifier.height(16.dp))
 
-
+                OutlinedTextField(
+                    value = imageUrl ?: "",
+                    onValueChange = { imageUrl = it },
+                    label = { Text("Image URL (optional)") },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text("Enter an image URL or upload one") }
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -400,7 +391,7 @@ fun CreateEventScreen(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isLoading
                 ) {
-                    if (isLoading) {
+                    if (isLoading && createEventState is Resource.Loading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
                             color = MaterialTheme.colors.onPrimary
@@ -411,6 +402,15 @@ fun CreateEventScreen(
                 }
             }
         }
+    }
+}
+
+private fun getCategoryColor(category: String): Color {
+    return when(category) {
+        "Concert" -> Color(0xFF5E35B1)
+        "Conference" -> Color(0xFF0288D1)
+        "Festival" -> Color(0xFFEF6C00)
+        else -> Color(0xFF2E7D32)
     }
 }
 

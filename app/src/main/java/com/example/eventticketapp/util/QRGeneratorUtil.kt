@@ -6,9 +6,19 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.EnumMap
 import javax.inject.Inject
 import javax.inject.Singleton
+
+@Serializable
+data class QRCodeContent(
+    val ticketId: String,
+    val eventId: String,
+    val userId: String
+)
 
 @Singleton
 class QRGeneratorUtil @Inject constructor() {
@@ -37,26 +47,18 @@ class QRGeneratorUtil @Inject constructor() {
     }
 
     fun generateTicketQRCodeData(ticketId: String, eventId: String, userId: String): String {
-        // Create a JSON-like string to encode ticket information
-        return "{\"ticketId\":\"$ticketId\",\"eventId\":\"$eventId\",\"userId\":\"$userId\"}"
+        val content = QRCodeContent(ticketId, eventId, userId)
+        return Json.encodeToString(content)
     }
 
     fun parseQRCodeData(qrCodeData: String): Map<String, String>? {
         return try {
-            // Simple JSON parser for our format - in a real app, use a proper JSON parser
-            val regex = "\\{\"ticketId\":\"([^\"]+)\",\"eventId\":\"([^\"]+)\",\"userId\":\"([^\"]+)\"\\}"
-            val matchResult = Regex(regex).find(qrCodeData)
-
-            if (matchResult != null) {
-                val (ticketId, eventId, userId) = matchResult.destructured
-                mapOf(
-                    "ticketId" to ticketId,
-                    "eventId" to eventId,
-                    "userId" to userId
-                )
-            } else {
-                null
-            }
+            val content = Json.decodeFromString<QRCodeContent>(qrCodeData)
+            mapOf(
+                "ticketId" to content.ticketId,
+                "eventId" to content.eventId,
+                "userId" to content.userId
+            )
         } catch (e: Exception) {
             null
         }

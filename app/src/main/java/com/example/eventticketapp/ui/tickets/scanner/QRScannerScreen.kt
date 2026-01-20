@@ -1,26 +1,23 @@
 package com.example.eventticketapp.ui.tickets.scanner
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.media.MediaPlayer
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +28,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -67,7 +65,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -91,9 +88,11 @@ import com.example.eventticketapp.data.model.Ticket
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.journeyapps.barcodescanner.BarcodeCallback
-import com.journeyapps.barcodescanner.BarcodeResult
-import com.journeyapps.barcodescanner.DecoratedBarcodeView
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
@@ -115,20 +114,16 @@ fun QRScannerScreen(
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     val hasCameraPermission = cameraPermissionState.status.isGranted
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (!isGranted) {
-            // Handle permission denied
-        }
-    }
-
     // Scanner state
     var flashEnabled by remember { mutableStateOf(false) }
     var showSuccessDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     var scannedTicket by remember { mutableStateOf<Ticket?>(null) }
+    var isProcessing by remember { mutableStateOf(false) }
+
+    // Camera control reference to toggle flash
+    var cameraControl by remember { mutableStateOf<androidx.camera.core.CameraControl?>(null) }
 
     // Animation for the scanner line
     val transition = rememberInfiniteTransition(label = "scanner")
@@ -158,6 +153,11 @@ fun QRScannerScreen(
         viewModel.loadEvent(eventId)
     }
 
+    // Toggle Flash effect
+    LaunchedEffect(flashEnabled, cameraControl) {
+        cameraControl?.enableTorch(flashEnabled)
+    }
+
     // Handle scan state changes
     LaunchedEffect(scanState) {
         when (scanState) {
@@ -173,6 +173,7 @@ fun QRScannerScreen(
                     showSuccessDialog = true
                 }
                 viewModel.clearScanState()
+                isProcessing = false
             }
             is Resource.Error -> {
                 errorMessage = (scanState as Resource.Error).message ?: "Unknown error"
@@ -183,6 +184,10 @@ fun QRScannerScreen(
 
                 showErrorDialog = true
                 viewModel.clearScanState()
+                isProcessing = false
+            }
+            is Resource.Loading -> {
+                // Loading state is handled by isProcessing
             }
             else -> {}
         }
@@ -358,11 +363,16 @@ fun QRScannerScreen(
                     .fillMaxWidth()
             ) {
                 if (hasCameraPermission) {
-                    QRScanner(
-                        onQrCodeScanned = { data ->
-                            viewModel.processQrCode(data)
+                    CameraPreview(
+                        onCameraControlReady = { control ->
+                            cameraControl = control
                         },
-                        flashEnabled = flashEnabled
+                        onQrCodeScanned = { data ->
+                            if (!isProcessing && !showSuccessDialog && !showErrorDialog) {
+                                isProcessing = true
+                                viewModel.processQrCode(data)
+                            }
+                        }
                     )
 
                     // Scanner overlay and animation
@@ -394,7 +404,7 @@ fun QRScannerScreen(
                     }
 
                     // Scanning indicator
-                    if (scanState is Resource.Loading) {
+                    if (isProcessing) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -471,125 +481,99 @@ fun QRScannerScreen(
 }
 
 @Composable
-fun QRScanner(
-    onQrCodeScanned: (String) -> Unit,
-    flashEnabled: Boolean = false
+fun CameraPreview(
+    onCameraControlReady: (androidx.camera.core.CameraControl) -> Unit,
+    onQrCodeScanned: (String) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val scope = rememberCoroutineScope()
-
-    // Using the ZXing Embedded library
+    
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+    
     AndroidView(
-        factory = { context ->
-            val barcodeView = DecoratedBarcodeView(context).apply {
-                setStatusText("")
-                setBorderColor(ContextCompat.getColor(context, android.R.color.transparent))
-                setBarcodeScannerViewStyle()
-                setCameraSettings { settings ->
-                    settings.isContinuousFocusEnabled = true
-                    settings.isAutoTorchEnabled = flashEnabled
+        factory = { ctx ->
+            val previewView = PreviewView(ctx)
+            val executor = ContextCompat.getMainExecutor(ctx)
+            
+            cameraProviderFuture.addListener({
+                val cameraProvider = cameraProviderFuture.get()
+                
+                // Preview
+                val preview = Preview.Builder().build().also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
                 }
-
-                decodeContinuous(object : BarcodeCallback {
-                    override fun barcodeResult(result: BarcodeResult) {
-                        scope.launch {
-                            result.text?.let { barcodeText ->
-                                // Pause scanning while processing
-                                pause()
-
-                                // Process QR code data
-                                onQrCodeScanned(barcodeText)
-
-                                // Resume scanning after a delay
-                                kotlinx.coroutines.delay(2000)
-                                resume()
-                            }
-                        }
-                    }
-                })
-            }
-
-            barcodeView
-        },
-        update = { barcodeView ->
-            if (flashEnabled) {
-                barcodeView.setTorchOn()
-            } else {
-                barcodeView.setTorchOff()
-            }
+                
+                // Image Analysis
+                val imageAnalysis = ImageAnalysis.Builder()
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+                
+                imageAnalysis.setAnalyzer(executor) { imageProxy ->
+                    processImageProxy(imageProxy, onQrCodeScanned)
+                }
+                
+                // Select back camera
+                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                
+                try {
+                    // Unbind use cases before rebinding
+                    cameraProvider.unbindAll()
+                    
+                    // Bind use cases to camera
+                    val camera = cameraProvider.bindToLifecycle(
+                        lifecycleOwner,
+                        cameraSelector,
+                        preview,
+                        imageAnalysis
+                    )
+                    
+                    // Pass camera control back
+                    onCameraControlReady(camera.cameraControl)
+                    
+                } catch (exc: Exception) {
+                    Log.e("CameraPreview", "Use case binding failed", exc)
+                }
+                
+            }, executor)
+            
+            previewView
         },
         modifier = Modifier.fillMaxSize()
     )
-
-    // Start and stop scanning based on lifecycle
-    DisposableEffect(lifecycleOwner) {
-        onDispose {
-            // Clean up resources if needed
-        }
-    }
 }
 
-@Composable
-fun ScanResultOverlay(
-    success: Boolean,
-    message: String,
-    onDismiss: () -> Unit
+@androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
+private fun processImageProxy(
+    imageProxy: ImageProxy,
+    onQrCodeScanned: (String) -> Unit
 ) {
-    val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(
-            if (success) R.raw.success_animation else R.raw.error_animation
-        )
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.7f)),
-        contentAlignment = Alignment.Center
-    ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .padding(16.dp),
-            shape = MaterialTheme.shapes.large
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LottieAnimation(
-                    composition = composition,
-                    iterations = 1,
-                    modifier = Modifier.size(120.dp)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = if (success) "Success!" else "Error",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = if (success) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = message,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Button(
-                    onClick = onDismiss,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(if (success) "Continue" else "OK")
+    val mediaImage = imageProxy.image
+    if (mediaImage != null) {
+        val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+        
+        // Use ML Kit Barcode Scanner
+        val options = BarcodeScannerOptions.Builder()
+            .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+            .build()
+            
+        val scanner = BarcodeScanning.getClient(options)
+        
+        scanner.process(image)
+            .addOnSuccessListener { barcodes ->
+                for (barcode in barcodes) {
+                    barcode.rawValue?.let { value ->
+                        onQrCodeScanned(value)
+                    }
                 }
             }
-        }
+            .addOnFailureListener {
+                // Handle failure
+            }
+            .addOnCompleteListener {
+                // Must close image proxy
+                imageProxy.close()
+            }
+    } else {
+        imageProxy.close()
     }
 }
