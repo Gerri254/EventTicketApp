@@ -66,6 +66,7 @@ import java.util.Date
 @Composable
 fun CreateEventScreen(
     navController: NavController,
+    eventId: String? = null,
     viewModel: CreateEventViewModel = hiltViewModel(),
     dateTimeUtils: DateTimeUtils = DateTimeUtils()
 ) {
@@ -88,6 +89,12 @@ fun CreateEventScreen(
     
     var showCategoryDropdown by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(eventId) {
+        if (eventId != null) {
+            viewModel.loadEvent(eventId)
+        }
+    }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()

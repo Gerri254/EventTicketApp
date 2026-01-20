@@ -2,8 +2,10 @@ package com.example.eventticketapp.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.eventticketapp.ui.auth.LoginScreen
 import com.example.eventticketapp.ui.auth.SignupScreen
 import com.example.eventticketapp.ui.events.create.CreateEventScreen
@@ -23,7 +25,9 @@ sealed class Screen(val route: String) {
     object EventDetails : Screen("event_details/{eventId}") {
         fun createRoute(eventId: String) = "event_details/$eventId"
     }
-    object CreateEvent : Screen("create_event")
+    object CreateEvent : Screen("create_event?eventId={eventId}") {
+        fun createRoute(eventId: String? = null) = if (eventId != null) "create_event?eventId=$eventId" else "create_event"
+    }
     object TicketTypeSetup : Screen("ticket_type_setup/{eventId}") {
         fun createRoute(eventId: String) = "ticket_type_setup/$eventId"
     }
@@ -68,8 +72,21 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        composable(Screen.CreateEvent.route) {
-            CreateEventScreen(navController = navController)
+        composable(
+            route = Screen.CreateEvent.route,
+            arguments = listOf(
+                navArgument("eventId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId")
+            CreateEventScreen(
+                navController = navController,
+                eventId = eventId
+            )
         }
 
         composable(Screen.TicketTypeSetup.route) { backStackEntry ->
